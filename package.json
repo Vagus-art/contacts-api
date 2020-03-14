@@ -1,0 +1,24 @@
+{
+  "name": "pg-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vagus-art/pg-rest-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vagus-art/pg-rest-api/issues"
+  },
+  "homepage": "https://github.com/Vagus-art/pg-rest-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^7.18.2"
+  }
+}
