@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXIST contacts (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL CHECK (LENGTH(name)>4),
+    phone BIGINT UNIQUE NOT NULL
+);
+

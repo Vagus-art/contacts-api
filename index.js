@@ -1,24 +1,14 @@
 const express = require("express");
 const app = express();
 const port = 4000;
-const { Pool } = require('pg')
+const routes = require("./routes");
+const morgan = require("morgan");
 
-const pool = new Pool({
-  user: 'agustin',
-  host: 'localhost',
-  database: 'helloworld',
-  password: 'agustin',
-  port: 5432,
-})
+//middleware
+app.use(morgan('dev'));
+app.use(express.json());
 
-app.get('/',async (request,response)=>{
-    pool.query('SELECT * FROM helloworld', (err, res) => {
-        const query = res.rows;
-        response.json(query);
-        pool.end();
-    }); 
-})
-
-
+//routes
+app.use('/api',routes);
 
 app.listen(port,()=>console.log(`app listening on port ${port}`));
