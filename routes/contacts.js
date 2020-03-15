@@ -17,70 +17,92 @@ const { param } = require("express-validator");
 
 //OBTENER TODOS LOS CONTACTOS
 router.get("/", (request, response) => {
-  return db.query("SELECT * FROM contacts", (err, res) => {
-    if (err) {
-      response.json({ errors: err });
-    }
-    const query = res.rows;
-    response.json({ data: query, errors: err });
-  });
-});
-
-
-//OBTENER CONTACTO POR ID
-router.get("/:id", [param("id").isInt()], validate, (request, response) => {
-  const { id } = request.params;
-  return db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
-    if (err) {
-      response.json({ errors: err });
-    }
-    const query = res.rows;
-    response.json({ data: query, errors: err });
-  });
-});
-
-//BUSQUEDA
-
-router.get("/search/:name",  [param("name").trim().escape()], (request, response) => {
-    const { name } = request.params;
-    return db.query(`SELECT * FROM contacts WHERE name ILIKE '%${name}%' LIMIT 5`, (err, res) => {
+  try {
+    db.query("SELECT * FROM contacts", (err, res) => {
       if (err) {
         response.json({ errors: err });
       }
       const query = res.rows;
       response.json({ data: query, errors: err });
     });
-  });
+  } catch (err) {
+    response.json({ errors: err });
+  }
+});
+
+//OBTENER CONTACTO POR ID
+router.get("/:id", [param("id").isInt()], validate, (request, response) => {
+  try {
+    const { id } = request.params;
+    db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
+      if (err) {
+        response.json({ errors: err });
+      }
+      const query = res.rows;
+      response.json({ data: query, errors: err });
+    });
+  } catch (err) {
+    response.json({ errors: err });
+  }
+});
+
+//BUSQUEDA
+
+router.get(
+  "/search/:name",
+  [
+    param("name")
+      .trim()
+      .escape()
+  ],
+  (request, response) => {
+    try {
+      const { name } = request.params;
+      db.query(
+        `SELECT * FROM contacts WHERE name ILIKE '%${name}%' LIMIT 5`,
+        (err, res) => {
+          if (err) {
+            response.json({ errors: err });
+          }
+          const query = res.rows;
+          response.json({ data: query, errors: err });
+        }
+      );
+    } catch (err) {
+      response.json({ errors: err });
+    }
+  }
+);
 
 //CREAR NUEVO CONTACTO
 router.post("/", contactValidationRules(), validate, (request, response) => {
-  const { name, phone } = request.body;
-  db.query(
-    `INSERT INTO contacts (name,phone) VALUES ('${name}',${phone})`,
-    (err, res) => {
-      if (err) {
-        if (
-          err.code == UNIQUE_VIOLATION &&
-          err.constraint == "contacts_phone_key"
-        ) {
-          response
-            .status(400)
-            .json({
+  try {
+    const { name, phone } = request.body;
+    db.query(
+      `INSERT INTO contacts (name,phone) VALUES ('${name}',${phone})`,
+      (err, res) => {
+        if (err) {
+          if (
+            err.code == UNIQUE_VIOLATION &&
+            err.constraint == "contacts_phone_key"
+          ) {
+            response.status(400).json({
               errors: [{ name: "That phone already exist in our databases..." }]
             });
-        } else {
-          response
-            .status(400)
-            .json({
+          } else {
+            response.status(400).json({
               errors: [{ name: "There has been an error with your form..." }]
             });
+          }
+        } else {
+          const query = res;
+          response.status(200).json({ message: query });
         }
-      } else {
-        const query = res;
-        response.status(200).json({ message: query });
       }
-    }
-  );
+    );
+  } catch (err) {
+    response.json({ errors: err });
+  }
 });
 
 //ACTUALIZAR CONTACTO (POR ID)
@@ -89,49 +111,63 @@ router.put(
   updateContactValidationRules(),
   validate,
   (request, response) => {
-    const { id } = request.params;
-    const { name, phone } = request.body;
-    db.query(
-      `UPDATE contacts SET name='${name}',phone=${phone} WHERE id=${id}`,
-      (err, res) => {
-        if (err) {
-          if (
-            err.code == UNIQUE_VIOLATION &&
-            err.constraint == "contacts_phone_key"
-          ) {
-            response
-              .status(400)
-              .json({
+    try {
+      const { id } = request.params;
+      const { name, phone } = request.body;
+      db.query(
+        `UPDATE contacts SET name='${name}',phone=${phone} WHERE id=${id}`,
+        (err, res) => {
+          if (err) {
+            if (
+              err.code == UNIQUE_VIOLATION &&
+              err.constraint == "contacts_phone_key"
+            ) {
+              response.status(400).json({
                 errors: [
                   { name: "That phone already exist in our databases..." }
                 ]
               });
-          } else {
-            response
-              .status(400)
-              .json({
+            } else {
+              response.status(400).json({
                 errors: [{ name: "There has been an error with your form..." }]
               });
+            }
+          } else {
+            const query = res;
+            response.status(200).json({ message: query });
           }
-        } else {
-          const query = res;
-          response.status(200).json({ message: query });
         }
-      }
-    );
+      );
+    } catch (err) {
+      response.json({ errors: err });
+    }
   }
 );
 
 //ELIMINAR CONTACTO POR ID
-router.delete("/:id", [param("id").isInt().trim().escape()], validate, (request, response) => {
-    const { id } = request.params;
-    return db.query(`DELETE FROM contacts WHERE id=${id}`, (err, res) => {
-      if (err) {
-        response.json({ errors: err });
-      }
-      const query = res.rows;
-      response.json({ data: query, errors: err });
-    });
-  });
+router.delete(
+  "/:id",
+  [
+    param("id")
+      .isInt()
+      .trim()
+      .escape()
+  ],
+  validate,
+  (request, response) => {
+    try {
+      const { id } = request.params;
+      db.query(`DELETE FROM contacts WHERE id=${id}`, (err, res) => {
+        if (err) {
+          response.json({ errors: err });
+        }
+        const query = res.rows;
+        response.json({ data: query, errors: err });
+      });
+    } catch (err) {
+      response.json({ errors: err });
+    }
+  }
+);
 
 module.exports = router;
