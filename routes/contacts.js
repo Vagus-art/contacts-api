@@ -60,7 +60,6 @@ router.get(
   "/search/:name",
   [
     param("name")
-      .trim()
       .escape()
   ],
   (request, response) => {
