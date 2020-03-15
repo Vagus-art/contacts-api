@@ -64,8 +64,12 @@ router.get(
           if (err) {
             response.json({ errors: err });
           }
-          const query = res.rows;
-          response.json({ data: query, errors: err });
+          try {
+            const query = res.rows;
+            response.json({ data: query, errors: err });
+          } catch (err) {
+            response.json({ errors: err });
+          }
         }
       );
     } catch (err) {
