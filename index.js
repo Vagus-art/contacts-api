@@ -5,7 +5,7 @@ const routes = require("./routes");
 const morgan = require("morgan");
 
 //middleware
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(express.json());
 
 //routes
