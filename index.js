@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 4000;
 const routes = require("./routes");
-const morgan = require("morgan");
+//const morgan = require("morgan");
 
 //middleware
 //app.use(morgan('dev'));
