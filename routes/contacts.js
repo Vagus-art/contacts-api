@@ -22,8 +22,12 @@ router.get("/", (request, response) => {
       if (err) {
         response.json({ errors: err });
       }
-      const query = res.rows;
-      response.json({ data: query, errors: err });
+      try {
+        const query = res.rows;
+        response.json({ data: query, errors: err });
+      } catch (err) {
+        response.json({ errors: err });
+      }
     });
   } catch (err) {
     response.json({ errors: err });
@@ -38,8 +42,12 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
       if (err) {
         response.json({ errors: err });
       }
-      const query = res.rows;
-      response.json({ data: query, errors: err });
+      try {
+        const query = res.rows;
+        response.json({ data: query, errors: err });
+      } catch (err) {
+        response.json({ errors: err });
+      }
     });
   } catch (err) {
     response.json({ errors: err });
@@ -137,8 +145,12 @@ router.put(
               });
             }
           } else {
-            const query = res;
-            response.status(200).json({ message: query });
+            try {
+              const query = res.rows;
+              response.json({ data: query, errors: err });
+            } catch (err) {
+              response.json({ errors: err });
+            }
           }
         }
       );
@@ -165,8 +177,12 @@ router.delete(
         if (err) {
           response.json({ errors: err });
         }
-        const query = res.rows;
-        response.json({ data: query, errors: err });
+        try {
+          const query = res.rows;
+          response.json({ data: query, errors: err });
+        } catch (err) {
+          response.json({ errors: err });
+        }
       });
     } catch (err) {
       response.json({ errors: err });
