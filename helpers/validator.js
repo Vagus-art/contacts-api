@@ -1,13 +1,33 @@
-const { body, validationResult } = require("express-validator");
+const { body, param, validationResult } = require("express-validator");
 
 const contactValidationRules = () => {
   return [
-    // username must be an email
-    body("name").isLength({ min: 5 }),
-    // password must be at least 5 chars long
+    // name must be 5 chars long
+    body("name")
+      .isLength({ min: 5 })
+      .withMessage("Name must be at least 5 characters long..."),
+    // phone must be 5 chars long and int
     body("phone")
       .isInt()
       .isLength({ min: 5 })
+      .withMessage("Phone number must be 5 digits long and only numbers...")
+  ];
+};
+
+const updateContactValidationRules = () => {
+  return [
+    // name must be 5 chars long
+    body("name")
+      .isLength({ min: 5 })
+      .withMessage("Name must be at least 5 characters long..."),
+    // phone must be 5 chars long and int
+    body("phone")
+      .isInt()
+      .isLength({ min: 5 })
+      .withMessage("Phone number must be 5 digits long and only numbers..."),
+    param("id")
+      .isInt()
+      .withMessage("Identifier is not valid")
   ];
 };
 
@@ -26,5 +46,6 @@ const validate = (request, response, next) => {
 
 module.exports = {
   contactValidationRules,
+  updateContactValidationRules,
   validate
 };
