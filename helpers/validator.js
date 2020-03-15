@@ -5,9 +5,13 @@ const contactValidationRules = () => {
     // name must be 5 chars long
     body("name")
       .isLength({ min: 5 })
+      .trim()
+      .escape()
       .withMessage("Name must be at least 5 characters long..."),
     // phone must be 5 chars long and int
     body("phone")
+      .trim()
+      .escape()
       .isInt()
       .isLength({ min: 5 })
       .withMessage("Phone number must be 5 digits long and only numbers...")
@@ -19,14 +23,20 @@ const updateContactValidationRules = () => {
     // name must be 5 chars long
     body("name")
       .isLength({ min: 5 })
+      .trim()
+      .escape()
       .withMessage("Name must be at least 5 characters long..."),
     // phone must be 5 chars long and int
     body("phone")
       .isInt()
       .isLength({ min: 5 })
+      .trim()
+      .escape()
       .withMessage("Phone number must be 5 digits long and only numbers..."),
     param("id")
       .isInt()
+      .trim()
+      .escape()
       .withMessage("Identifier is not valid")
   ];
 };

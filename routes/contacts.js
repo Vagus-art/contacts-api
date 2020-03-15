@@ -26,6 +26,7 @@ router.get("/", (request, response) => {
   });
 });
 
+
 //OBTENER CONTACTO POR ID
 router.get("/:id", [param("id").isInt()], validate, (request, response) => {
   const { id } = request.params;
@@ -37,6 +38,19 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
     response.json({ data: query, errors: err });
   });
 });
+
+//BUSQUEDA
+
+router.get("/search/:name",  [param("name").trim().escape()], (request, response) => {
+    const { name } = request.params;
+    return db.query(`SELECT * FROM contacts WHERE name ILIKE '%${name}%' LIMIT 5`, (err, res) => {
+      if (err) {
+        response.json({ errors: err });
+      }
+      const query = res.rows;
+      response.json({ data: query, errors: err });
+    });
+  });
 
 //CREAR NUEVO CONTACTO
 router.post("/", contactValidationRules(), validate, (request, response) => {
@@ -109,7 +123,7 @@ router.put(
 );
 
 //ELIMINAR CONTACTO POR ID
-router.delete("/:id", [param("id").isInt()], validate, (request, response) => {
+router.delete("/:id", [param("id").isInt().trim().escape()], validate, (request, response) => {
     const { id } = request.params;
     return db.query(`DELETE FROM contacts WHERE id=${id}`, (err, res) => {
       if (err) {
