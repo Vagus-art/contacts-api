@@ -12,22 +12,20 @@ const {
   validate
 } = require("../helpers/validator");
 
+//response generico
+const { queryResponse } = require("../helpers/");
+
 //para validar param de id
 const { param } = require("express-validator");
 
 //OBTENER TODOS LOS CONTACTOS
 router.get("/", (request, response) => {
   try {
-    db.query("SELECT * FROM contacts", (err, res) => {
+    db.query("SELECT * FROM contacts LIMIT 10", (err, res) => {
       if (err) {
         response.json({ errors: err });
       }
-      try {
-        const query = res.rows;
-        response.json({ data: query, errors: err });
-      } catch (err) {
-        response.json({ errors: err });
-      }
+      queryResponse(res,response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -42,12 +40,7 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
       if (err) {
         response.json({ errors: err });
       }
-      try {
-        const query = res.rows;
-        response.json({ data: query, errors: err });
-      } catch (err) {
-        response.json({ errors: err });
-      }
+      queryResponse(res,response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -60,6 +53,7 @@ router.get(
   "/search/:name",
   [
     param("name")
+      .trim()
       .escape()
   ],
   (request, response) => {
@@ -71,12 +65,7 @@ router.get(
           if (err) {
             response.json({ errors: err });
           }
-          try {
-            const query = res.rows;
-            response.json({ data: query, errors: err });
-          } catch (err) {
-            response.json({ errors: err });
-          }
+          queryResponse(res,response);
         }
       );
     } catch (err) {
@@ -144,12 +133,7 @@ router.put(
               });
             }
           } else {
-            try {
-              const query = res.rows;
-              response.json({ data: query, errors: err });
-            } catch (err) {
-              response.json({ errors: err });
-            }
+            queryResponse(res,response);
           }
         }
       );
@@ -176,12 +160,7 @@ router.delete(
         if (err) {
           response.json({ errors: err });
         }
-        try {
-          const query = res.rows;
-          response.json({ data: query, errors: err });
-        } catch (err) {
-          response.json({ errors: err });
-        }
+        queryResponse(res,response);
       });
     } catch (err) {
       response.json({ errors: err });
