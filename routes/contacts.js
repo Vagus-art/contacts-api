@@ -1,8 +1,18 @@
 const { Router } = require("express");
 const router = Router();
+const { UNIQUE_VIOLATION } = require('pg-error-constants');
+
+//conexion a base de datos por variables de entorno
 const db = require("../database");
+
+//para validar post y put
 const { contactValidationRules, validate } = require("../helpers/validator");
 
+//para validar param de id
+const { param } = require("express-validator");
+
+
+//OBTENER TODOS LOS CONTACTOS
 router.get("/", (request, response) => {
   return db.query("SELECT * FROM contacts", (err, res) => {
     if (err) {
@@ -13,7 +23,9 @@ router.get("/", (request, response) => {
   });
 });
 
-router.get("/:id", (request, response) => {
+
+//OBTENER CONTACTO POR ID
+router.get("/:id", [param('id').isInt()], validate, (request, response) => {
   const { id } = request.params;
   return db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
     if (err) {
@@ -24,29 +36,19 @@ router.get("/:id", (request, response) => {
   });
 });
 
+
+//CREAR NUEVO CONTACTO
 router.post("/", contactValidationRules(), validate, (request, response) => {
   const { name, phone } = request.body;
   db.query(
     `INSERT INTO contacts (name,phone) VALUES ('${name}',${phone})`,
     (err, res) => {
       if (err) {
-        switch (err.code) {
-          case 23505:
-            switch (err.constraint) {
-              case "contacts_phone_key":
-                response.status(400).json({ errors: [{name:"phone already exist"}] });
-                break;
-              default:
-                response.status(400).json({
-                  errors: [{name:"there is duplicate data in your form"}]
-                });
-                break;
-            }
-          default:
-            response.status(400).json({
-              errors: [{name:"there has been an error accessing our database servers"}]
-            });
-            break;
+        if (err.code==UNIQUE_VIOLATION&&err.constraint=="contacts_phone_key"){
+            response.status(400).json({errors:[{name:"That phone already exist in our databases..."}]});
+        }
+        else{
+            response.status(400).json({errors:[{name:"There has been an error with your form..."}]});
         }
       } else {
         const query = res;
