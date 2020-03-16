@@ -16,7 +16,7 @@ const {
 const { queryResponse } = require("../helpers/");
 
 //para validar param de id
-const { param } = require("express-validator");
+const { param, body } = require("express-validator");
 
 //OBTENER TODOS LOS CONTACTOS
 router.get("/", (request, response) => {
@@ -25,7 +25,7 @@ router.get("/", (request, response) => {
       if (err) {
         response.json({ errors: err });
       }
-      queryResponse(res,response);
+      queryResponse(res, response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -40,7 +40,7 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
       if (err) {
         response.json({ errors: err });
       }
-      queryResponse(res,response);
+      queryResponse(res, response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -65,7 +65,7 @@ router.get(
           if (err) {
             response.json({ errors: err });
           }
-          queryResponse(res,response);
+          queryResponse(res, response);
         }
       );
     } catch (err) {
@@ -133,7 +133,7 @@ router.put(
               });
             }
           } else {
-            queryResponse(res,response);
+            queryResponse(res, response);
           }
         }
       );
@@ -160,7 +160,27 @@ router.delete(
         if (err) {
           response.json({ errors: err });
         }
-        queryResponse(res,response);
+        queryResponse(res, response);
+      });
+    } catch (err) {
+      response.json({ errors: err });
+    }
+  }
+);
+
+//ELIMINAR CONTACTOS POR ARREGLO DE IDS
+router.delete(
+  "/",
+  [body("id").isArray(), body("id.*").isInt()],
+  validate,
+  (request, response) => {
+    try {
+      const { id } = request.body;
+      db.query(`DELETE FROM contacts WHERE id IN (${id.join()})`, (err, res) => {
+        if (err) {
+          response.json({ errors: err });
+        }
+        queryResponse(res, response);
       });
     } catch (err) {
       response.json({ errors: err });

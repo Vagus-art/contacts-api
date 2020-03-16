@@ -54,6 +54,7 @@ const validate = (request, response, next) => {
   });
 };
 
+
 module.exports = {
   contactValidationRules,
   updateContactValidationRules,
