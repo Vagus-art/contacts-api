@@ -10,9 +10,9 @@ const {
   contactValidationRules,
   updateContactValidationRules,
   validate
-} = require("../helpers/validator");
+} = require("../helpers/");
 
-//response generico
+//templates de responses (try catch por nulidades si se escapa un error, mantener el mismo key para los mensajes desde el server)
 const { queryResponse, actionResponse } = require("../helpers/");
 
 //para validar param de id
@@ -24,8 +24,9 @@ router.get("/", (request, response) => {
     db.query("SELECT * FROM contacts ORDER BY name LIMIT 10", (err, res) => {
       if (err) {
         response.json({ errors: err });
+      } else {
+        queryResponse(res, response);
       }
-      queryResponse(res, response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -40,14 +41,15 @@ router.get(
   (request, response) => {
     try {
       let { offset } = request.params;
-      offset = offset===0 ? 1 : offset*10;
+      offset = offset === 0 ? 1 : offset * 10;
       db.query(
         `SELECT * FROM contacts ORDER BY name OFFSET ${offset} LIMIT 10`,
         (err, res) => {
           if (err) {
             response.json({ errors: err });
+          } else {
+            queryResponse(res, response);
           }
-          queryResponse(res, response);
         }
       );
     } catch (err) {
@@ -63,8 +65,9 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
     db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
       if (err) {
         response.json({ errors: err });
+      } else {
+        queryResponse(res, response);
       }
-      queryResponse(res, response);
     });
   } catch (err) {
     response.json({ errors: err });
@@ -87,8 +90,9 @@ router.get(
         (err, res) => {
           if (err) {
             response.json({ errors: err });
+          } else {
+            queryResponse(res, response);
           }
-          queryResponse(res, response);
         }
       );
     } catch (err) {
@@ -118,7 +122,7 @@ router.post("/", contactValidationRules(), validate, (request, response) => {
             });
           }
         } else {
-          actionResponse("POST Success", response);
+          actionResponse("POST Success", response.status(200));
         }
       }
     );
@@ -155,7 +159,7 @@ router.put(
               });
             }
           } else {
-            actionResponse(`UPDATE Success ID=${id}`, response);
+            actionResponse(`UPDATE Success ID=${id}`, response.status(200));
           }
         }
       );
@@ -180,12 +184,15 @@ router.delete(
       const { id } = request.params;
       db.query(`DELETE FROM contacts WHERE id=${id}`, (err, res) => {
         if (err) {
-          response.json({ errors: err });
+          response.status(400).json({ errors: err });
+        } else if (res.rowCount == 0) {
+          actionResponse(`ID '${id}' not found`, response.status(400));
+        } else {
+          actionResponse(`DELETE Success ID=${id}`, response.status(200));
         }
-        actionResponse(`DELETE Success ID=${id}`, response);
       });
     } catch (err) {
-      response.json({ errors: err });
+      response.status(400).json({ errors: err });
     }
   }
 );
@@ -203,12 +210,21 @@ router.delete(
         (err, res) => {
           if (err) {
             response.json({ errors: err });
+          } else if (res.rowCount == 0) {
+            actionResponse(
+              `None of these IDS '${id.join()}' were found`,
+              response.status(400)
+            );
+          } else {
+            actionResponse(
+              `DELETE Success ID=[${id.join()}]`,
+              response.status(200)
+            );
           }
-          actionResponse(`DELETE Success ID=[${id.join()}]`, response);
         }
       );
     } catch (err) {
-      response.json({ errors: err });
+      response.status(400).json({ errors: err });
     }
   }
 );
