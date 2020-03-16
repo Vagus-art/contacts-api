@@ -1,14 +1,14 @@
 const { body, param, validationResult } = require("express-validator");
 
+
+//VALIDACION DE FORMULARIO POST/INSERT (contacts)
 const contactValidationRules = () => {
   return [
-    // name must be 5 chars long
     body("name")
       .isLength({ min: 5 })
       .trim()
       .escape()
       .withMessage("Name must be at least 5 characters long..."),
-    // phone must be 5 chars long and int
     body("phone")
       .trim()
       .escape()
@@ -18,15 +18,14 @@ const contactValidationRules = () => {
   ];
 };
 
+//VALIDACION DE FORMULARIO PUT/UPDATE (contacts)
 const updateContactValidationRules = () => {
   return [
-    // name must be 5 chars long
     body("name")
       .isLength({ min: 5 })
       .trim()
       .escape()
       .withMessage("Name must be at least 5 characters long..."),
-    // phone must be 5 chars long and int
     body("phone")
       .isInt()
       .isLength({ min: 5 })
@@ -41,6 +40,7 @@ const updateContactValidationRules = () => {
   ];
 };
 
+//MIDDLEWARE DE VALIDACION, EN CASO DE HABER UN ERROR CORTA EL REQUEST ANTES DE INTERACTUAR CON LA BASE DE DATOS, Y LO DEVUELVE EN UN RESPONSE
 const validate = (request, response, next) => {
   const errors = validationResult(request);
   if (errors.isEmpty()) {
