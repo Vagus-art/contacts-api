@@ -36,7 +36,7 @@ router.get("/", (request, response) => {
 //OBTENER TODOS LOS CONTACTOS ORDENADOS ALFABETICAMENTE (LIMITE DE 10) OFFSET PARA DIVISION POR PAGINAS O SCROLL INFINITO
 router.get(
   "/offset/:offset",
-  [param("offset").isInt()],
+  [param("offset").isInt().withMessage("OFFSET must be INT")],
   validate,
   (request, response) => {
     try {
@@ -59,7 +59,7 @@ router.get(
 );
 
 //OBTENER CONTACTO POR ID
-router.get("/:id", [param("id").isInt()], validate, (request, response) => {
+router.get("/:id", [param("id").isInt().withMessage("ID must be INT")], validate, (request, response) => {
   try {
     const { id } = request.params;
     db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
@@ -176,7 +176,7 @@ router.delete(
     param("id")
       .isInt()
       .trim()
-      .escape()
+      .escape().withMessage("ID must be INT")
   ],
   validate,
   (request, response) => {
@@ -200,7 +200,7 @@ router.delete(
 //ELIMINAR CONTACTOS POR ARREGLO DE IDS
 router.delete(
   "/",
-  [body("id").isArray(), body("id.*").isInt()],
+  [body("id").isArray().withMessage("ID must be an array of INT"), body("id.*").isInt().withMessage("ID must be an array of INT")],
   validate,
   (request, response) => {
     try {
