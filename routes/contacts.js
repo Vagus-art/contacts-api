@@ -13,15 +13,15 @@ const {
 } = require("../helpers/validator");
 
 //response generico
-const { queryResponse } = require("../helpers/");
+const { queryResponse, actionResponse } = require("../helpers/");
 
 //para validar param de id
 const { param, body } = require("express-validator");
 
-//OBTENER TODOS LOS CONTACTOS
+//OBTENER TODOS LOS CONTACTOS ORDENADOS ALFABETICAMENTE (LIMITE DE 10)
 router.get("/", (request, response) => {
   try {
-    db.query("SELECT * FROM contacts LIMIT 10", (err, res) => {
+    db.query("SELECT * FROM contacts ORDER BY name LIMIT 10", (err, res) => {
       if (err) {
         response.json({ errors: err });
       }
@@ -31,6 +31,30 @@ router.get("/", (request, response) => {
     response.json({ errors: err });
   }
 });
+
+//OBTENER TODOS LOS CONTACTOS ORDENADOS ALFABETICAMENTE (LIMITE DE 10) OFFSET PARA DIVISION POR PAGINAS O SCROLL INFINITO
+router.get(
+  "/offset/:offset",
+  [param("offset").isInt()],
+  validate,
+  (request, response) => {
+    try {
+      let { offset } = request.params;
+      offset = offset===0 ? 1 : offset*10;
+      db.query(
+        `SELECT * FROM contacts ORDER BY name OFFSET ${offset} LIMIT 10`,
+        (err, res) => {
+          if (err) {
+            response.json({ errors: err });
+          }
+          queryResponse(res, response);
+        }
+      );
+    } catch (err) {
+      response.json({ errors: err });
+    }
+  }
+);
 
 //OBTENER CONTACTO POR ID
 router.get("/:id", [param("id").isInt()], validate, (request, response) => {
@@ -94,8 +118,7 @@ router.post("/", contactValidationRules(), validate, (request, response) => {
             });
           }
         } else {
-          const query = res;
-          response.status(200).json({ message: query });
+          actionResponse("POST Success", response);
         }
       }
     );
@@ -132,7 +155,7 @@ router.put(
               });
             }
           } else {
-            queryResponse(res, response);
+            actionResponse(`UPDATE Success ID=${id}`, response);
           }
         }
       );
@@ -159,7 +182,7 @@ router.delete(
         if (err) {
           response.json({ errors: err });
         }
-        queryResponse(res, response);
+        actionResponse(`DELETE Success ID=${id}`, response);
       });
     } catch (err) {
       response.json({ errors: err });
@@ -175,12 +198,15 @@ router.delete(
   (request, response) => {
     try {
       const { id } = request.body;
-      db.query(`DELETE FROM contacts WHERE id IN (${id.join()})`, (err, res) => {
-        if (err) {
-          response.json({ errors: err });
+      db.query(
+        `DELETE FROM contacts WHERE id IN (${id.join()})`,
+        (err, res) => {
+          if (err) {
+            response.json({ errors: err });
+          }
+          actionResponse(`DELETE Success ID=[${id.join()}]`, response);
         }
-        queryResponse(res, response);
-      });
+      );
     } catch (err) {
       response.json({ errors: err });
     }
