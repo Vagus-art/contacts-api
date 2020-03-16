@@ -48,7 +48,6 @@ router.get("/:id", [param("id").isInt()], validate, (request, response) => {
 });
 
 //BUSQUEDA
-
 router.get(
   "/search/:name",
   [
