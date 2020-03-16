@@ -86,7 +86,7 @@ router.get(
     try {
       const { name } = request.params;
       db.query(
-        `SELECT * FROM contacts WHERE name ILIKE '%${name}%' LIMIT 5`,
+        `SELECT * FROM contacts WHERE name ILIKE '%${name}%' ORDER BY NAME LIMIT 5`,
         (err, res) => {
           if (err) {
             response.json({ errors: err });
