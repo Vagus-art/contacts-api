@@ -1,5 +1,7 @@
 # pg-rest-api
 
-##todo
+## todo
 
 - error response in helpers, using the repeated json errors syntax
+- endpoint with table info (row count) and statistics?
+- api documentation
