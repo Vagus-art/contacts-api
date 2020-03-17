@@ -133,13 +133,12 @@ router.post("/", contactValidationRules(), validate, (request, response) => {
 
 //ACTUALIZAR CONTACTO (POR ID)
 router.put(
-  "/:id",
+  "/",
   updateContactValidationRules(),
   validate,
   (request, response) => {
     try {
-      const { id } = request.params;
-      const { name, phone } = request.body;
+      const { name, phone, id } = request.body;
       db.query(
         `UPDATE contacts SET name='${name}',phone=${phone} WHERE id=${id}`,
         (err, res) => {

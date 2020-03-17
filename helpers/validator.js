@@ -32,7 +32,7 @@ const updateContactValidationRules = () => {
       .trim()
       .escape()
       .withMessage("Phone number must be 5 digits long and only numbers..."),
-    param("id")
+    body("id")
       .isInt()
       .trim()
       .escape()
