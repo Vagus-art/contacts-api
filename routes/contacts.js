@@ -7,8 +7,12 @@ const db = require("../database");
 
 //para validar post y put
 const {
+  contactOffsetValidationRules,
+  contactSearchValidationRules,
   contactValidationRules,
   updateContactValidationRules,
+  deleteContactValidationRules,
+  deleteContactArrayValidationRules,
   validate
 } = require("../helpers/");
 
@@ -36,7 +40,7 @@ router.get("/", (request, response) => {
 //OBTENER TODOS LOS CONTACTOS ORDENADOS ALFABETICAMENTE (LIMITE DE 10) OFFSET PARA DIVISION POR PAGINAS O SCROLL INFINITO
 router.get(
   "/offset/:offset",
-  [param("offset").isInt().withMessage("OFFSET must be INT")],
+  contactOffsetValidationRules(),
   validate,
   (request, response) => {
     try {
@@ -59,29 +63,34 @@ router.get(
 );
 
 //OBTENER CONTACTO POR ID
-router.get("/:id", [param("id").isInt().withMessage("ID must be INT")], validate, (request, response) => {
-  try {
-    const { id } = request.params;
-    db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
-      if (err) {
-        response.json({ errors: err });
-      } else {
-        queryResponse(res, response);
-      }
-    });
-  } catch (err) {
-    response.json({ errors: err });
+router.get(
+  "/:id",
+  [
+    param("id")
+      .isInt()
+      .withMessage("ID must be INT")
+  ],
+  validate,
+  (request, response) => {
+    try {
+      const { id } = request.params;
+      db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
+        if (err) {
+          response.json({ errors: err });
+        } else {
+          queryResponse(res, response);
+        }
+      });
+    } catch (err) {
+      response.json({ errors: err });
+    }
   }
-});
+);
 
 //BUSQUEDA
 router.get(
   "/search/:name",
-  [
-    param("name")
-      .trim()
-      .escape()
-  ],
+  contactSearchValidationRules(),
   (request, response) => {
     try {
       const { name } = request.params;
@@ -131,7 +140,7 @@ router.post("/", contactValidationRules(), validate, (request, response) => {
   }
 });
 
-//ACTUALIZAR CONTACTO (POR ID)
+//ACTUALIZAR CONTACTO POR ID
 router.put(
   "/",
   updateContactValidationRules(),
@@ -171,12 +180,7 @@ router.put(
 //ELIMINAR CONTACTO POR ID
 router.delete(
   "/:id",
-  [
-    param("id")
-      .isInt()
-      .trim()
-      .escape().withMessage("ID must be INT")
-  ],
+  deleteContactValidationRules(),
   validate,
   (request, response) => {
     try {
@@ -199,7 +203,7 @@ router.delete(
 //ELIMINAR CONTACTOS POR ARREGLO DE IDS
 router.delete(
   "/",
-  [body("id").isArray().withMessage("ID must be an array of INT"), body("id.*").isInt().withMessage("ID must be an array of INT")],
+  deleteContactArrayValidationRules(),
   validate,
   (request, response) => {
     try {
