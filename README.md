@@ -2,6 +2,6 @@
 
 ## todo
 
-- error response in helpers, using the repeated json errors syntax
-- endpoint with table info (row count) and statistics?
-- api documentation
+- better postgres error handling (more edge cases)
+- reform try/catch blocks for better readability
+- api documentation (md markup language learning opportunity)

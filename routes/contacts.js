@@ -5,8 +5,9 @@ const { UNIQUE_VIOLATION } = require("pg-error-constants");
 //conexion a base de datos por variables de entorno
 const db = require("../database");
 
-//para validar post y put
+//para validar todas las formas de input
 const {
+  contactIdValidationRules,
   contactOffsetValidationRules,
   contactSearchValidationRules,
   contactValidationRules,
@@ -17,23 +18,20 @@ const {
 } = require("../helpers/");
 
 //templates de responses (try catch por nulidades si se escapa un error, mantener el mismo key para los mensajes desde el server)
-const { queryResponse, actionResponse } = require("../helpers/");
-
-//para validar param de id
-const { param, body } = require("express-validator");
+const { queryResponse, actionResponse, errorResponse, serverErrorResponse, countResponse } = require("../helpers/");
 
 //OBTENER TODOS LOS CONTACTOS ORDENADOS ALFABETICAMENTE (LIMITE DE 10)
 router.get("/", (request, response) => {
   try {
     db.query("SELECT * FROM contacts ORDER BY name LIMIT 10", (err, res) => {
       if (err) {
-        response.json({ errors: err });
+        serverErrorResponse(response);
       } else {
         queryResponse(res, response);
       }
     });
   } catch (err) {
-    response.json({ errors: err });
+    serverErrorResponse(response);
   }
 });
 
@@ -50,14 +48,14 @@ router.get(
         `SELECT * FROM contacts ORDER BY name OFFSET ${offset} LIMIT 10`,
         (err, res) => {
           if (err) {
-            response.json({ errors: err });
+            serverErrorResponse(response);
           } else {
             queryResponse(res, response);
           }
         }
       );
     } catch (err) {
-      response.json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );
@@ -65,24 +63,21 @@ router.get(
 //OBTENER CONTACTO POR ID
 router.get(
   "/:id",
-  [
-    param("id")
-      .isInt()
-      .withMessage("ID must be INT")
-  ],
+  contactIdValidationRules()
+  ,
   validate,
   (request, response) => {
     try {
       const { id } = request.params;
       db.query(`SELECT * FROM contacts WHERE id=${id}`, (err, res) => {
         if (err) {
-          response.json({ errors: err });
+          serverErrorResponse(response);
         } else {
           queryResponse(res, response);
         }
       });
     } catch (err) {
-      response.json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );
@@ -98,17 +93,32 @@ router.get(
         `SELECT * FROM contacts WHERE name ILIKE '%${name}%' ORDER BY NAME LIMIT 5`,
         (err, res) => {
           if (err) {
-            response.json({ errors: err });
+            serverErrorResponse(response);
           } else {
             queryResponse(res, response);
           }
         }
       );
     } catch (err) {
-      response.json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );
+
+//OBTENER DATOS DE TABLA
+router.get("/info/rowcount", (request, response) => {
+  try {
+    db.query("SELECT COUNT(*) FROM contacts", (err, res) => {
+      if (err) {
+        serverErrorResponse(response);
+      } else {
+        countResponse(res, response);
+      }
+    });
+  } catch (err) {
+    serverErrorResponse(response);
+  }
+});
 
 //CREAR NUEVO CONTACTO
 router.post("/", contactValidationRules(), validate, (request, response) => {
@@ -122,21 +132,23 @@ router.post("/", contactValidationRules(), validate, (request, response) => {
             err.code == UNIQUE_VIOLATION &&
             err.constraint == "contacts_phone_key"
           ) {
-            response.status(400).json({
-              errors: [{ name: "That phone already exist in our databases..." }]
-            });
+            errorResponse(
+              "That phone already exist in our databases...",
+              response
+            );
           } else {
-            response.status(400).json({
-              errors: [{ name: "There has been an error with your form..." }]
-            });
+            errorResponse(
+              "There has been an error with your form...",
+              response
+            );
           }
         } else {
-          actionResponse("POST Success", response.status(200));
+          actionResponse("POST Success", response);
         }
       }
     );
   } catch (err) {
-    response.json({ errors: err });
+    serverErrorResponse(response);
   }
 });
 
@@ -156,23 +168,23 @@ router.put(
               err.code == UNIQUE_VIOLATION &&
               err.constraint == "contacts_phone_key"
             ) {
-              response.status(400).json({
-                errors: [
-                  { name: "That phone already exist in our databases..." }
-                ]
-              });
+              errorResponse(
+                "That phone already exist in our databases...",
+                response
+              );
             } else {
-              response.status(400).json({
-                errors: [{ name: "There has been an error with your form..." }]
-              });
+              errorResponse(
+                "There has been an error with your form...",
+                response
+              );
             }
           } else {
-            actionResponse(`UPDATE Success ID=${id}`, response.status(200));
+            actionResponse(`UPDATE Success ID=${id}`, response);
           }
         }
       );
     } catch (err) {
-      response.json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );
@@ -187,15 +199,15 @@ router.delete(
       const { id } = request.params;
       db.query(`DELETE FROM contacts WHERE id=${id}`, (err, res) => {
         if (err) {
-          response.status(400).json({ errors: err });
+          serverErrorResponse(response);
         } else if (res.rowCount == 0) {
-          actionResponse(`ID '${id}' not found`, response.status(400));
+          errorResponse(`ID '${id}' not found`, response);
         } else {
-          actionResponse(`DELETE Success ID=${id}`, response.status(200));
+          actionResponse(`DELETE Success ID=${id}`, response);
         }
       });
     } catch (err) {
-      response.status(400).json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );
@@ -212,22 +224,19 @@ router.delete(
         `DELETE FROM contacts WHERE id IN (${id.join()})`,
         (err, res) => {
           if (err) {
-            response.json({ errors: err });
+            serverErrorResponse(response);
           } else if (res.rowCount == 0) {
-            actionResponse(
+            errorResponse(
               `None of these IDS '${id.join()}' were found`,
-              response.status(400)
+              response
             );
           } else {
-            actionResponse(
-              `DELETE Success ID=[${id.join()}]`,
-              response.status(200)
-            );
+            actionResponse(`DELETE Success ID=[${id.join()}]`, response);
           }
         }
       );
     } catch (err) {
-      response.status(400).json({ errors: err });
+      serverErrorResponse(response);
     }
   }
 );

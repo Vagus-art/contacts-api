@@ -1,5 +1,14 @@
 const { body, param, validationResult } = require("express-validator");
 
+//VALIDACION DE PARAMETRO ID EN GET (contacts)
+const contactIdValidationRules = () => {
+  return [
+    param("id")
+      .isInt()
+      .withMessage("ID must be INT")
+  ];
+};
+
 //VALIDACION DE PARAMETRO OFFSET EN GET (contacts)
 const contactOffsetValidationRules = () => {
   return [
@@ -89,12 +98,13 @@ const validate = (request, response, next) => {
   const extractedErrors = [];
   errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }));
 
-  return response.json({
-    errors: extractedErrors
+  return response.status(400).json({
+    errors: extractedErrors, success:false
   });
 };
 
 module.exports = {
+  contactIdValidationRules,
   contactOffsetValidationRules,
   contactSearchValidationRules,
   contactValidationRules,

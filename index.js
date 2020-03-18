@@ -7,7 +7,7 @@ const routes = require("./routes");
 //just in case
 app.get('/',(req,res)=>{
     res.send("Hello! this api endpoints start at /api/contacts/");
-})
+});
 
 //middleware
 //app.use(morgan('dev'));
