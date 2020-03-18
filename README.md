@@ -31,3 +31,4 @@
 - reform try/catch blocks for better readability
 - api documentation (md markup language learning opportunity)
 - separating logic in routes, making controller functions (maybe)
+- 404 responses

@@ -12,7 +12,7 @@ Show 10 contacts with offset, the number provided in params is multiplied by 10 
 
 ## Success Response
 
-**Condition** : If the offset doesn't exceed the number of rows in the database table, it should respond with an array.
+**Condition** : If the offset doesn't exceed the number of rows in the database table.
 
 **Code** : `200 OK`
 
