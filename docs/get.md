@@ -16,7 +16,7 @@ Used to get 10 contacts ordered alphabetically.
 
 ```json
 {
-    {
+
   "data": [
     {
       "id": 30,
@@ -71,6 +71,6 @@ Used to get 10 contacts ordered alphabetically.
   ],
   "success": true
 }
-}
+
 ```
 
