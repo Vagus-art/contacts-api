@@ -1,6 +1,6 @@
 # pg-rest-api
 
-### Siple api for saving phone numbers.
+### Simple api for saving phone numbers.
 
 ## All Endpoints are open:
 
@@ -30,3 +30,4 @@
 - better postgres error handling (more edge cases)
 - reform try/catch blocks for better readability
 - api documentation (md markup language learning opportunity)
+- separating logic in routes, making controller functions (maybe)
