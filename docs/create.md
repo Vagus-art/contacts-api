@@ -32,6 +32,15 @@ Provide name and phone.
 
 **Code** : `200 OK`
 
+**Content**
+
+```json
+{
+  "message": "POST Success",
+  "success": true
+}
+```
+
 ## Error Responses
 
 **Condition** : If phone already exists.
