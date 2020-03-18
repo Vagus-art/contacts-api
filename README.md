@@ -29,6 +29,7 @@
 
 - better postgres error handling (more edge cases)
 - reform try/catch blocks for better readability
-- api documentation (md markup language learning opportunity)
+- api documentation (markdown language learning opportunity)
+- validation error documentation
 - separating logic in routes, making controller functions (maybe)
 - 404 responses

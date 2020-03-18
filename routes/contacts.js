@@ -220,18 +220,19 @@ router.delete(
   (request, response) => {
     try {
       const { id } = request.body;
+      const idString = id.join();
       db.query(
-        `DELETE FROM contacts WHERE id IN (${id.join()})`,
+        `DELETE FROM contacts WHERE id IN (${idString})`,
         (err, res) => {
           if (err) {
             serverErrorResponse(response);
           } else if (res.rowCount == 0) {
             errorResponse(
-              `None of these IDS '${id.join()}' were found`,
+              `None of these IDS '${idString}' were found`,
               response
             );
           } else {
-            actionResponse(`DELETE Success ID=[${id.join()}]`, response);
+            actionResponse(`DELETE Success ID=[${idString}]`, response);
           }
         }
       );
