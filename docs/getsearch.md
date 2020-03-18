@@ -1,6 +1,6 @@
 # Search
 
-Show 5 contacts (max) that match with the :search param.
+Show 5 contacts (max) that match with the **search** param.
 
 **URL** : `/api/contacts/search/:search/`
 
@@ -12,7 +12,7 @@ Show 5 contacts (max) that match with the :search param.
 
 ## Success Response
 
-**Condition** : If any row matches with :search.
+**Condition** : If any row matches with **search**.
 
 **Code** : `200 OK`
 
