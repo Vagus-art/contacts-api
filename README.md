@@ -9,7 +9,7 @@
 ### If you want to host it yourself:
 
 - Install PostgreSQL and create your database
-- Run the query stored in sql/init to create the **contacts** table
+- Run the query stored in `sql/init` to create the **contacts** table
 - Install NodeJS
 - Run `npm install` on this project's root folder (where **package.json** is stored) and wait for dependency downloads
 - Make a .env file in the project's root folder with these variables from your postgres instance:
