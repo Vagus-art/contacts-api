@@ -2,8 +2,8 @@
 
 ### Simple api for saving phone numbers.
 
-### This app is hosted on 
-[**Heroku**](https://pg-raw-api.herokuapp.com/api/contacts/) Give it a try!
+### This api is hosted on:
+[**Heroku**](https://pg-raw-api.herokuapp.com/api/contacts/) Check it out!
 
 ### If you want to host it yourself:
  * Install PostgreSQL and create your database
@@ -13,7 +13,6 @@
  * Run `npm start` for normal functionality
  * Run `npm run dev` for refreshes when your code changes (uses nodemon to scan the source code files)
  
-
 ## All Endpoints are open:
 
 ### GET
