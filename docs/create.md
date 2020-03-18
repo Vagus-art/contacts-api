@@ -1,7 +1,6 @@
-# Create User's Account
+# Create a new contact
 
-Create an Account for the authenticated User if an Account for that User does
-not already exist. Each User can only have one Account.
+Create a new contact providing name and phone number.
 
 **URL** : `/api/contacts/`
 
