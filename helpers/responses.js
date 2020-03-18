@@ -31,7 +31,7 @@ const errorResponse = (error, response) => {
 
 //RESPONSE PARA QUERIES QUE TERMINAN EN ERROR DE SERVIDOR
 const serverErrorResponse = (response) => {
-  response.status(400).json({ errors: [{error:"Server Error."}], success:false });
+  response.status(500).json({ errors: [{error:"Server Error."}], success:false });
 };
 
 
