@@ -31,16 +31,20 @@ const contactSearchValidationRules = () => {
 const contactValidationRules = () => {
   return [
     body("name")
-      .isLength({ min: 5 })
       .trim()
       .escape()
-      .withMessage("Name must be at least 5 characters long..."),
+      .isLength({ min: 5 })
+      .withMessage("Name must be at least 5 characters long...")
+      .isString()
+      .notEmpty(),
+
     body("phone")
       .trim()
       .escape()
-      .isInt()
       .isLength({ min: 5 })
       .withMessage("Phone number must be 5 digits long and only numbers...")
+      .isInt()
+      .notEmpty()
   ];
 };
 
@@ -96,10 +100,13 @@ const validate = (request, response, next) => {
     return next();
   }
   const extractedErrors = [];
-  errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }));
+  errors
+    .array({ onlyFirstError: true })
+    .map(err => extractedErrors.push({ [err.param]: err.msg }));
 
   return response.status(400).json({
-    errors: extractedErrors, success:false
+    errors: extractedErrors,
+    success: false
   });
 };
 
