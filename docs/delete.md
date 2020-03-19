@@ -4,7 +4,7 @@ Used to delete a specific contact with the ID provided in URL's params.
 
 **URL** : `/api/contacts/:id`
 
-**URL Parameters** : `id=[integer]` where is the ID of the contact on the
+**URL Parameters** : `id=[integer]` where `id` is the ID of the contact on the
 server.
 
 **Method** : `DELETE`
