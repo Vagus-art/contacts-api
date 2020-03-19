@@ -68,10 +68,7 @@ const contactSearchValidationRules = () => {
 
 //VALIDACION DE FORMULARIO PUT/UPDATE (contacts)
 const updateContactValidationRules = () => {
-  return [
-    ...contactIdValidationRules(),
-    ...idBodyValidationRules()
-  ];
+  return [...contactValidationRules(), ...idBodyValidationRules()];
 };
 
 //VALIDACION DE PARAMETROS DELETE (contacts)
