@@ -8,7 +8,7 @@ Update contact by ID providing name, a phone number and an ID.
 
 **Data constraints**
 
-Provide name and phone.
+Provide name, phone and ID.
 
 ```json
 {
