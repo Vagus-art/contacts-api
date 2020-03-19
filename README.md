@@ -51,6 +51,7 @@
 ## Todo
 
 - better postgres error handling (more edge cases)
+- pass status code to response handlers, to make a more specific use of them
 - reform try/catch blocks for better readability
 - api documentation (markdown language learning opportunity)
 - validation error documentation
