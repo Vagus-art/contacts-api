@@ -8,8 +8,6 @@ Show 10 contacts with offset, the number provided in params is multiplied by 10 
 
 **Method** : `GET`
 
-**Auth required** : NO
-
 ## Success Response
 
 **Condition** : If the offset doesn't exceed the number of rows in the database table.

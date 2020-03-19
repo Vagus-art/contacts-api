@@ -6,8 +6,6 @@ Used to get the rowcount of the **contacts** table.
 
 **Method** : `GET`
 
-**Auth required** : NO
-
 ## Success Response
 
 **Code** : `200 OK`

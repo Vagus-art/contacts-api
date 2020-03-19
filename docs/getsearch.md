@@ -8,8 +8,6 @@ Show 5 contacts (max) that match with the **search** param.
 
 **Method** : `GET`
 
-**Auth required** : NO
-
 ## Success Response
 
 **Condition** : If any row matches with **search**.

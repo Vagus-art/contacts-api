@@ -6,8 +6,6 @@ Used to get 10 contacts ordered alphabetically.
 
 **Method** : `GET`
 
-**Auth required** : NO
-
 ## Success Response
 
 **Code** : `200 OK`
