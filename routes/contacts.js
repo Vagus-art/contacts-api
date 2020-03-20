@@ -237,6 +237,7 @@ router.delete(
         }
       );
     } catch (err) {
+      console.log(err);
       serverErrorResponse(response);
     }
   }

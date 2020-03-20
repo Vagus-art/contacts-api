@@ -79,7 +79,9 @@ const deleteContactValidationRules = () => {
 //VALIDACION DE FORMULARIO DELETE POR ARREGLO (contacts)
 const deleteContactArrayValidationRules = () => {
   return [
-    ...idBodyValidationRules(),
+    body("id")
+      .isArray()
+      .withMessage("ID must be an array of INT"),
     body("id.*")
       .isInt()
       .withMessage("ID must be an array of INT")

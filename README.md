@@ -53,10 +53,9 @@
 - better postgres error handling (more edge cases)
 - pass status code to response handlers, to make a more specific use of them
 - reform try/catch blocks for better readability
-- api documentation (markdown language learning opportunity)
-- validation error documentation
+- validation error documentation for GET requests (params)
 - separating logic in routes, making controller functions (maybe)
-- 404 responses
+- 404 status code in `not found` responses
 - traffic limit
 - input length maximum
 - requests log table
