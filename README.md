@@ -60,3 +60,4 @@
 - input length maximum
 - requests log table
 - ask for .env stored admin password in PUT, POST and DELETE requests
+- **API caching** Using [this express middleware structure](https://medium.com/the-node-js-collection/simple-server-side-cache-for-express-js-with-node-js-45ff296ca0f0), with [memory-cache npm package](https://www.npmjs.com/package/memory-cache)
