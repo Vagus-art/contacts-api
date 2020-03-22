@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const { UNIQUE_VIOLATION } = require("pg-error-constants");
 
+
 //conexion a base de datos por variables de entorno
 const db = require("../database");
 
